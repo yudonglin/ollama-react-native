@@ -1,8 +1,6 @@
 import { AbortableAsyncIterator } from './utils.js'
-
-import fs, { promises } from 'node:fs'
-import { resolve } from 'node:path'
 import { Ollama as OllamaBrowser } from './browser.js'
+import RNFS from 'react-native-fs'
 
 import type { CreateRequest, ProgressResponse } from './interfaces.js'
 
@@ -13,9 +11,9 @@ export class Ollama extends OllamaBrowser {
       return Buffer.from(image).toString('base64')
     }
     try {
-      if (fs.existsSync(image)) {
+      if (await RNFS.exists(image)) {
         // this is a filepath, read the file and convert it to base64
-        const fileBuffer = await promises.readFile(resolve(image))
+        const fileBuffer = await RNFS.readFile(image, 'base64')
         return Buffer.from(fileBuffer).toString('base64')
       }
     } catch {
@@ -33,8 +31,7 @@ export class Ollama extends OllamaBrowser {
    */
   private async fileExists(path: string): Promise<boolean> {
     try {
-      await promises.access(path)
-      return true
+      return await RNFS.exists(path)
     } catch {
       return false
     }
@@ -50,7 +47,7 @@ export class Ollama extends OllamaBrowser {
   ): Promise<ProgressResponse | AbortableAsyncIterator<ProgressResponse>> {
     // fail if request.from is a local path
     // TODO: https://github.com/ollama/ollama-js/issues/191
-    if (request.from && await this.fileExists(resolve(request.from))) {
+    if (request.from && (await this.fileExists(request.from))) {
       throw Error('Creating with a local path is not currently supported from ollama-js')
     }
 

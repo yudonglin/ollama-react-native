@@ -1,6 +1,6 @@
-# Ollama JavaScript Library
+# Ollama React Native Library
 
-The Ollama JavaScript library provides the easiest way to integrate your JavaScript project with [Ollama](https://github.com/jmorganca/ollama).
+The Ollama React Native library provides the easiest way to integrate your JavaScript project with [Ollama](https://github.com/jmorganca/ollama).
 
 ## Getting Started
 
